@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+	<meta charset="utf-8">
+	<title>Адреса</title>
+</head>
+<body>
+	<input type="text" id="addressInput">
+
+</body>
+<script>
+	$('#addressInput').keyup(function() {
+	var url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address";
+	var token = "dd88e0bd40225af0c562cbff1c48d7112932769f";
+	var query = $('#addressInput').val();
+
+	var options = {
+		method: "POST",
+		mode: "cors",
+		headers: {
+			"Content-Type": "application/json",
+			"Accept": "application/json",
+			"Authorization": "Token " + token
+		},
+		body: JSON.stringify({query: query})
+	}	
+	var values = [];
+	fetch(url, options)
+	.then(
+	function(response) {
+		response.json().then(function(data) 
+		{
+			console.log(data.suggestions[0].value);
+			for (var i = 0; i < 10; i++) 
+			{
+				values.push(data.suggestions[i].value);
+			}
+	  });
+	}
+  )
+  .catch(function(err) {
+	console.log('Fetch Error :-S', err);
+  });
+	$('#addressInput').autocomplete({
+	  source: values
+	});	
+	});
+</script>
+</html>
